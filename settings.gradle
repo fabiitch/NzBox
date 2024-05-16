@@ -1,0 +1,5 @@
+include 'Nz'
+project(":Nz").projectDir = file("../Nz")
+
+rootProject.name = 'NzBox'
+
