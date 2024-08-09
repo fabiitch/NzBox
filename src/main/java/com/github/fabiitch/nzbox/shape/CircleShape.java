@@ -3,10 +3,12 @@ package com.github.fabiitch.nzbox.shape;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.fabiitch.nz.gdx.render.NzShapeRenderer;
+import com.github.fabiitch.nz.java.math.shapes.utils.CircleUtils;
 import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
 import com.github.fabiitch.nzbox.contact.compute.ShapeContact;
 
 public class CircleShape extends BodyShape<Circle> {
+
     public CircleShape(Circle shape) {
         super(shape);
     }
@@ -60,5 +62,10 @@ public class CircleShape extends BodyShape<Circle> {
     @Override
     public Vector2 replace(ShapeContact visitor) {
         return visitor.replace(shape);
+    }
+
+    @Override
+    public void computeBoundingRect() {
+        CircleUtils.getRectBounds(this.shape, this.boundingRect);
     }
 }

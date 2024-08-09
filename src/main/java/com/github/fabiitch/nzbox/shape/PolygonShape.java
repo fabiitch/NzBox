@@ -2,7 +2,9 @@ package com.github.fabiitch.nzbox.shape;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.fabiitch.nz.gdx.render.NzShapeRenderer;
+import com.github.fabiitch.nz.java.math.shapes.utils.PolygonUtils;
 import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
 import com.github.fabiitch.nzbox.contact.compute.ShapeContact;
 
@@ -13,7 +15,13 @@ public class PolygonShape extends BodyShape<Polygon> {
 
     public PolygonShape(float[] vertices) {
         super(new Polygon(vertices));
+        PolygonUtils.ensureClockWise(this.shape);
+        //TODO not thread safe
+        this.boundingRect.set(shape.getBoundingRectangle());
+        if (!PolygonUtils.isConvex(shape))
+            throw new GdxRuntimeException("NztBox, PolygonShape allow only convex polygons");
     }
+
     @Override
     public Vector2 getPosition(Vector2 res) {
         return res.set(shape.getX(), shape.getY());
@@ -57,5 +65,11 @@ public class PolygonShape extends BodyShape<Polygon> {
     @Override
     public Vector2 replace(ShapeContact visitor) {
         return visitor.replace(shape);
+    }
+
+    @Override
+    public void computeBoundingRect() {
+        //TODO not thread safe
+        this.boundingRect.set(shape.getBoundingRectangle());
     }
 }

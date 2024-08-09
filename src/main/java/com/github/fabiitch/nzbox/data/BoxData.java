@@ -44,8 +44,6 @@ public class BoxData {
         bodyIdGenerator.free(body.id);
         bodies.removeValue(body, true);
         body.world = null;
-
-
         for (Fixture fixture : body.getFixtures()) {
             removeFixture(fixture);
         }
@@ -53,12 +51,14 @@ public class BoxData {
 
     public void addFixture(Fixture fixture) {
         fixture.id = fixtureIdGenerator.newId();
-
         quadTree.add(fixture, fixture.getBodyShape().getBoundingRect());
     }
 
     public void removeFixture(Fixture fixture) {
-
+        Array<ContactFixture> contacts = fixture.getContacts();
+        for (ContactFixture contactFixture : contacts) {
+            world.getContactListener().endContact(contactFixture);
+        }
     }
 
     public Body getBody(int id) {
@@ -108,5 +108,6 @@ public class BoxData {
             bodyB.removeContact(contactBody);
             boxPools.free(contactBody);
         }
+        boxPools.free(contactFixture);
     }
 }

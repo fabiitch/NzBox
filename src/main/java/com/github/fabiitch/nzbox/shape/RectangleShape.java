@@ -60,4 +60,9 @@ public class RectangleShape extends BodyShape<Rectangle> {
     public Vector2 replace(ShapeContact visitor) {
         return visitor.replace(shape);
     }
+
+    @Override
+    public void computeBoundingRect() {
+        this.boundingRect.set(this.shape);
+    }
 }
