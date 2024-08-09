@@ -27,16 +27,16 @@ public class Body {
 
     @Getter
     @Setter
-    public boolean dirty;
+    private boolean dirty;
 
     @Getter
-    public final Vector2 position = new Vector2();
+    private final Vector2 position = new Vector2();
     @Getter
-    public final Vector2 velocity = new Vector2();
+    private final Vector2 velocity = new Vector2();
     @Getter
-    public float angularVelocity;//Degrees
+    private float angularVelocity;//Degrees
     @Getter
-    public float rotation = 0; //Degrees
+    private float rotation = 0; //Degrees
 
     @Getter
     @Setter
@@ -71,6 +71,7 @@ public class Body {
             Fixture fixture = fixtures.get(i);
             if (fixture.isActive()) {
                 fixture.setPosition(position.x, position.y, rotation);
+                fixture.getBodyShape().computeBoundingRect();
             }
         }
     }
@@ -83,6 +84,7 @@ public class Body {
     }
 
     public boolean removeFixture(Fixture fixture) {
+        world.getData().removeFixture(fixture);
         return fixtures.removeValue(fixture, true);
     }
 
@@ -92,6 +94,15 @@ public class Body {
                 return contact;
         }
         return null;
+    }
+
+
+    public void setVelocity(float x, float y){
+        this.velocity.set(x,y);
+    }
+
+    public void setVelocity(Vector2 velocity){
+        this.velocity.set(velocity);
     }
 
      void addContact(ContactBody contactBody) {

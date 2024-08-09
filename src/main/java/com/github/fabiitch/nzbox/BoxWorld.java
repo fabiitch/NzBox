@@ -11,12 +11,16 @@ import com.github.fabiitch.nzbox.data.BoxData;
 import com.github.fabiitch.nzbox.data.Fixture;
 import com.github.fabiitch.nzbox.utils.BoxPools;
 import lombok.Getter;
+import lombok.Setter;
 
 public class BoxWorld {
 
     @Getter
     private final BoxData data;
 
+
+    @Getter
+    @Setter
     private ContactListener contactListener = new ContactListenerLogger();
 
     private BoxPools pools;
@@ -111,5 +115,8 @@ public class BoxWorld {
 
     public void addBody(Body body) {
         data.addBody(body);
+    }
+    public void removeBody(Body body) {
+        data.removeBody(body);
     }
 }

@@ -12,7 +12,7 @@ import lombok.Getter;
 public abstract class BodyShape<S extends Shape2D> {
 
     protected S shape;
-    private Rectangle boundingRect;
+    protected final Rectangle boundingRect = new Rectangle();
 
     public BodyShape(S shape) {
         this.shape = shape;
@@ -40,4 +40,5 @@ public abstract class BodyShape<S extends Shape2D> {
 
     public abstract Vector2 replace(ShapeContact visitor);
 
+    public abstract void computeBoundingRect();
 }
