@@ -65,7 +65,7 @@ public class BoxDebugRenderer {
             tmp2.set(body.getVelocity());
 
             shapeRenderer.line();
-            shapeRenderer.line(tmp1, tmp1.cpy().add(tmp2.scl(0.2f))); //TODO fab cpy
+            shapeRenderer.line(tmp1, tmp3.set(tmp1).add(tmp2.scl(0.2f)));
         }
 
         shapeRenderer.end();
