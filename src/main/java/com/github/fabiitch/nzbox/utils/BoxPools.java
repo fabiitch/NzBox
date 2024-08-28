@@ -5,6 +5,7 @@ import com.github.fabiitch.nzbox.contact.ContactBody;
 import com.github.fabiitch.nzbox.contact.ContactFixture;
 import com.github.fabiitch.nzbox.data.Fixture;
 
+//TODO body, fixture, shape
 public class BoxPools {
     public ContactFixture getContactFixture(Fixture fixtureA, Fixture fixtureB) {
         ContactFixture contactFixture = Pools.obtain(ContactFixture.class);

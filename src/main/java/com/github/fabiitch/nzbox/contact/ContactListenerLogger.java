@@ -31,17 +31,4 @@ public class ContactListenerLogger implements ContactListener {
 
         System.out.println(format);
     }
-
-    @Override
-    public void continueContact(ContactFixture contactFixture) {
-        Fixture fixtureA = contactFixture.getFixtureA();
-        Fixture fixtureB = contactFixture.getFixtureB();
-        Body bodyA = fixtureA.getBody();
-        Body bodyB = fixtureB.getBody();
-        String format = StrFormat.format("[Continue contact] b:{}/f:{} | b:{}/f:{}",
-                bodyA.getId(), fixtureA.getId(),
-                bodyB.getId(), fixtureB.getId());
-
-        System.out.println(format);
-    }
 }

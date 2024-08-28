@@ -17,8 +17,6 @@ public class BoxWorld {
 
     @Getter
     private final BoxData data;
-
-
     @Getter
     @Setter
     private ContactListener contactListener = new ContactListenerLogger();
@@ -77,9 +75,9 @@ public class BoxWorld {
 
     protected void checkFixtureCollision(Body bodyA, Fixture fixtureA) {
         for (Body bodyB : data.getBodies()) {
-            if (bodyA != bodyB && bodyB.isActive() && ContactUtils.shouldTest(bodyA, bodyB)) {
+            if (bodyA != bodyB && bodyB.isActive()) {
                 for (Fixture fixtureB : bodyB.getFixtures()) {
-                    if (fixtureB.isActive() && ContactUtils.shouldTest(fixtureA, fixtureB)) {
+                    if (fixtureB.isActive()) {
                         fixtureCollision(fixtureA, fixtureB);
                     }
                 }
@@ -92,7 +90,6 @@ public class BoxWorld {
         if (contactFixture != null) {
             boolean isAlwaysContact = fixtureA.testContact(fixtureB);
             if (isAlwaysContact) {
-                contactListener.continueContact(contactFixture);
                 if (contactFixture.isReplace()) {
                     fixtureA.replace(fixtureB);
                 }
