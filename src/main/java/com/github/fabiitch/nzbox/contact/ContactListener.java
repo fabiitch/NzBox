@@ -6,5 +6,4 @@ public interface ContactListener {
 
     void endContact(ContactFixture contactFixture);
 
-    void continueContact(ContactFixture contactFixture);
 }

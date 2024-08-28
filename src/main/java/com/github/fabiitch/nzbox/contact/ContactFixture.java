@@ -12,6 +12,7 @@ public class ContactFixture {
     private Fixture fixtureB;
 
     private boolean replace;
+    private boolean triggerEnd = true;
 
     public boolean hasBody(Body body) {
         return this.fixtureA.getBody() == body || this.fixtureB.getBody() == body;
