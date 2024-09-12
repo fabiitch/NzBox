@@ -18,7 +18,6 @@ public class BoxData {
     private IdGenerator bodyIdGenerator = new StaticIdGenerator();
     private IdGenerator fixtureIdGenerator = new StaticIdGenerator();
 
-
     private final Array<Body> bodies = new Array<>();
     private QuadTree<Fixture<?>> quadTree = new QuadTree<>();
 
