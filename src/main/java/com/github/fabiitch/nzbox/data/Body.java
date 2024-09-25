@@ -59,13 +59,6 @@ public class Body {
         return true;
     }
 
-    public void setPosition(float x, float y, float rotation) {
-        this.position.set(x, y);
-        this.rotation = rotation;
-        updatePosition();
-        dirty = true;
-    }
-
     private void updatePosition() {
         for (int i = 0, n = fixtures.size; i < n; i++) {
             Fixture fixture = fixtures.get(i);
@@ -74,6 +67,17 @@ public class Body {
                 fixture.getBodyShape().computeBoundingRect();
             }
         }
+    }
+
+    public void setPosition(Vector2 position, float rotation) {
+        setPosition(position.x, position.y, rotation);
+    }
+
+    public void setPosition(float x, float y, float rotation) {
+        this.position.set(x, y);
+        this.rotation = rotation;
+        updatePosition();
+        dirty = true;
     }
 
     public void addFixture(Fixture fixture) {
@@ -97,19 +101,19 @@ public class Body {
     }
 
 
-    public void setVelocity(float x, float y){
-        this.velocity.set(x,y);
+    public void setVelocity(float x, float y) {
+        this.velocity.set(x, y);
     }
 
-    public void setVelocity(Vector2 velocity){
+    public void setVelocity(Vector2 velocity) {
         this.velocity.set(velocity);
     }
 
-     void addContact(ContactBody contactBody) {
+    void addContact(ContactBody contactBody) {
         contacts.add(contactBody);
     }
 
-     void removeContact(ContactBody contactBody) {
+    void removeContact(ContactBody contactBody) {
         contacts.removeValue(contactBody, true);
     }
 }
