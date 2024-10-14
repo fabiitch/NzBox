@@ -96,7 +96,7 @@ dependencies {
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation  project(':Nz')
 
-    testImplementation 'com.github.fabiitch:GdxUnit:1.0'
+    testImplementation 'com.github.fabiitch:GdxUnit:master-SNAPSHOT'
     testImplementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
 
