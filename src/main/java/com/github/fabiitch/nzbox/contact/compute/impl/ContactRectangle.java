@@ -5,7 +5,7 @@ import com.github.fabiitch.nz.java.math.shapes.intersectors.IntersectorCircle;
 import com.github.fabiitch.nz.java.math.shapes.intersectors.IntersectorPolygon;
 import com.github.fabiitch.nz.java.math.shapes.intersectors.IntersectorRectangle;
 import com.github.fabiitch.nz.java.math.shapes.utils.PolygonUtils;
-import com.github.fabiitch.nz.java.math.shapes.utils.RectangleUtils;
+import com.github.fabiitch.nz.java.math.shapes.utils.rectangle.RectangleUtils;
 import com.github.fabiitch.nz.java.math.vectors.V2;
 import com.github.fabiitch.nzbox.contact.compute.ShapeContact;
 import lombok.Setter;
