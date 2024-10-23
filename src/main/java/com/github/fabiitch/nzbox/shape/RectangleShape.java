@@ -2,7 +2,7 @@ package com.github.fabiitch.nzbox.shape;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.fabiitch.nz.gdx.render.NzShapeRenderer;
+import com.github.fabiitch.nz.gdx.render.shape.NzShapeRenderer;
 import com.github.fabiitch.nz.java.math.shapes.utils.RectangleUtils;
 import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
 import com.github.fabiitch.nzbox.contact.compute.ShapeContact;
