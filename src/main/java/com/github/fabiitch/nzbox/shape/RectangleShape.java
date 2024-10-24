@@ -23,7 +23,7 @@ public class RectangleShape extends BodyShape<Rectangle> {
 
     @Override
     public void setPosition(float x, float y) {
-        RectangleUtils.setPosWithCenter(shape, x, y);
+        RectangleUtils.setCenter(shape, x, y);
     }
 
     @Override
