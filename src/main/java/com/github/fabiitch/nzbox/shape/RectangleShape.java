@@ -65,4 +65,9 @@ public class RectangleShape extends BodyShape<Rectangle> {
     public void computeBoundingRect() {
         this.boundingRect.set(this.shape);
     }
+
+    @Override
+    public boolean isValid() {
+        return !RectangleUtils.isALine(shape);
+    }
 }

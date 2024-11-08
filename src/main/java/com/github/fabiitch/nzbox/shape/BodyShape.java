@@ -41,4 +41,6 @@ public abstract class BodyShape<S extends Shape2D> {
     public abstract Vector2 replace(ShapeContact visitor);
 
     public abstract void computeBoundingRect();
+
+    public abstract boolean isValid();
 }

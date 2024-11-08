@@ -72,4 +72,9 @@ public class PolygonShape extends BodyShape<Polygon> {
         //TODO not thread safe
         this.boundingRect.set(shape.getBoundingRectangle());
     }
+
+    @Override
+    public boolean isValid() {
+        return getShape().getBoundingRectangle().area() > 0;
+    }
 }

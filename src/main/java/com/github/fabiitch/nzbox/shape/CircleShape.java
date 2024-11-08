@@ -68,4 +68,9 @@ public class CircleShape extends BodyShape<Circle> {
     public void computeBoundingRect() {
         CircleUtils.getRectBounds(this.shape, this.boundingRect);
     }
+
+    @Override
+    public boolean isValid() {
+        return shape.radius > 0;
+    }
 }

@@ -49,6 +49,9 @@ public class BoxData {
     }
 
     public void addFixture(Fixture fixture) {
+        if(!fixture.getBodyShape().isValid()){
+            throw new IllegalArgumentException("Fixture shape is invalid");
+        }
         fixture.id = fixtureIdGenerator.newId();
         quadTree.add(fixture, fixture.getBodyShape().getBoundingRect());
     }
