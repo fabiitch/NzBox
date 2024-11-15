@@ -5,7 +5,6 @@ import com.github.fabiitch.nzbox.bodies.BodyType;
 import com.github.fabiitch.nzbox.contact.ContactFixture;
 import com.github.fabiitch.nzbox.contact.ContactListener;
 import com.github.fabiitch.nzbox.contact.ContactListenerLogger;
-import com.github.fabiitch.nzbox.contact.ContactUtils;
 import com.github.fabiitch.nzbox.data.Body;
 import com.github.fabiitch.nzbox.data.BoxData;
 import com.github.fabiitch.nzbox.data.Fixture;
