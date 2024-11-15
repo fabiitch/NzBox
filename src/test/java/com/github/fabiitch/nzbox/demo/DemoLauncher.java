@@ -15,7 +15,6 @@ public class DemoLauncher {
         configuration.setWindowedMode(WITDH, HEIGHT);
         configuration.setWindowIcon("box.png");
 
-
         ApplicationListener applicationListener = new Game() {
             @Override
             public void create() {
