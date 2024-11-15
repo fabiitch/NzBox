@@ -2,8 +2,6 @@ package com.github.fabiitch.nzbox.contact;
 
 
 import com.github.fabiitch.nzbox.bodies.BodyType;
-import com.github.fabiitch.nzbox.data.Body;
-import com.github.fabiitch.nzbox.data.Fixture;
 
 public class ContactUtils {
 
