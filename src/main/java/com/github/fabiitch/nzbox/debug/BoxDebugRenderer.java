@@ -1,5 +1,6 @@
 package com.github.fabiitch.nzbox.debug;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nz.gdx.render.g2d.FontDrawer;
+import com.github.fabiitch.nz.gdx.render.shape.Frustum2D;
 import com.github.fabiitch.nz.gdx.render.shape.NzShapeRenderer;
 import com.github.fabiitch.nzbox.BoxWorld;
 import com.github.fabiitch.nzbox.bodies.BodyType;
@@ -22,6 +24,8 @@ public class BoxDebugRenderer {
 
     private final FontDrawer fontDrawer;
 
+    private final Frustum2D frustum;
+
     private Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
     public BoxDebugRenderer() {
@@ -30,12 +34,15 @@ public class BoxDebugRenderer {
         bitmapFont = new BitmapFont();
         bitmapFont.getData().setScale(0.5f);
         spriteBatch = new SpriteBatch();
+        frustum = new Frustum2D();
 
         fontDrawer = new FontDrawer(bitmapFont, spriteBatch);
     }
 
-    public void render(BoxWorld world, Matrix4 projMatrix) {
-        shapeRenderer.setProjectionMatrix(projMatrix);
+    public void render(BoxWorld world, Camera camera) {
+        frustum.update(camera);
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         Array<Body> bodies = world.getData().getBodies();
@@ -47,7 +54,6 @@ public class BoxDebugRenderer {
             Array<Fixture> fixtures = body.getFixtures();
             for (int i2 = 0, n2 = fixtures.size; i2 < n2; i2++) {
                 Fixture fixture = fixtures.get(i2);
-
                 if (body.getBodyType() == BodyType.Static)
                     shapeRenderer.setColor(Color.RED);
                 else if (body.getBodyType() == BodyType.Dynamic)
@@ -71,7 +77,7 @@ public class BoxDebugRenderer {
         shapeRenderer.end();
 
         spriteBatch.begin();
-        spriteBatch.setProjectionMatrix(projMatrix);
+        spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.end();
 
     }
