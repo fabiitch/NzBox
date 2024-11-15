@@ -94,9 +94,9 @@ dependencies {
 // Libraries that don't use libGDX directly can change the next line
 // from `api` to `testImplementation` .
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
-    implementation  project(':Nz')
+    implementation project(':Nz')
 
-    testImplementation 'com.github.fabiitch:GdxUnit:1.2'
+    testImplementation 'com.github.fabiitch:GdxUnit:1.3'
     testImplementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
 
