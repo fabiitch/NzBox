@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nz.gdx.render.g2d.FontDrawer;
@@ -47,13 +46,13 @@ public class BoxDebugRenderer {
 
         Array<Body> bodies = world.getData().getBodies();
 
-
         for (int i1 = 0, n1 = bodies.size; i1 < n1; i1++) {
             Body body = bodies.get(i1);
 
             Array<Fixture> fixtures = body.getFixtures();
             for (int i2 = 0, n2 = fixtures.size; i2 < n2; i2++) {
                 Fixture fixture = fixtures.get(i2);
+
                 if (body.getBodyType() == BodyType.Static)
                     shapeRenderer.setColor(Color.RED);
                 else if (body.getBodyType() == BodyType.Dynamic)
