@@ -1,13 +1,13 @@
 package com.github.fabiitch.nzbox.data;
 
 import com.badlogic.gdx.utils.Array;
-import com.github.fabiitch.nz.java.data.quadtree.QuadTree;
 import com.github.fabiitch.nzbox.BoxWorld;
+import com.github.fabiitch.nzbox.bodies.BodyType;
 import com.github.fabiitch.nzbox.contact.data.ContactBody;
 import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.contact.utils.ContactUtils;
 import com.github.fabiitch.nzbox.data.quad.BoxQuadTree;
-import com.github.fabiitch.nzbox.utils.BoxPools;
+import com.github.fabiitch.nzbox.pools.BoxPools;
 import com.github.fabiitch.nzbox.utils.IdGenerator;
 import com.github.fabiitch.nzbox.utils.StaticIdGenerator;
 import lombok.Getter;
@@ -20,6 +20,7 @@ public class BoxData {
     private final IdGenerator fixtureIdGenerator = new StaticIdGenerator();
 
     private final Array<Body> bodies = new Array<>();
+    private final Array<Body> movingBodies = new Array<>();
 
     private final BoxPools boxPools;
     private final BoxQuadTree boxQuadTree;
@@ -27,7 +28,7 @@ public class BoxData {
     public BoxData(BoxWorld world, BoxPools boxPools) {
         this.world = world;
         this.boxPools = boxPools;
-        boxQuadTree = new BoxQuadTree();
+        boxQuadTree = new BoxQuadTree(boxPools);
     }
 
     public void addBody(Body body) {
@@ -39,6 +40,8 @@ public class BoxData {
         for (Fixture fixture : body.getFixtures()) {
             addFixture(fixture);
         }
+        if(body.isActive() && body.getBodyType()!= BodyType.Static)
+            movingBodies.add(body);
     }
 
     public void removeBody(Body body) {
@@ -51,7 +54,7 @@ public class BoxData {
     }
 
     public void addFixture(Fixture fixture) {
-        if(!fixture.getBodyShape().isValid()){
+        if (!fixture.getBodyShape().isValid()) {
             throw new IllegalArgumentException("Fixture shape is invalid");
         }
         fixture.id = fixtureIdGenerator.newId();
@@ -115,4 +118,5 @@ public class BoxData {
         }
         boxPools.free(contactFixture);
     }
+
 }

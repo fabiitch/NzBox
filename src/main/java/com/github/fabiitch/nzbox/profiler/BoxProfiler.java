@@ -11,6 +11,7 @@ public class BoxProfiler {
 
     public FloatCounter deltaTime, timerStep, timerIteration;
     public BoxProfilerValue bodyMove, bodyCheckCollision, fixtureCheckCollision;
+    public BoxProfilerValue fastCheckContact;
     public BoxProfilerValue beginContact, endContact;
 
     public BoxProfilerValue testContact, replaceContact, collisionData, computeContact;

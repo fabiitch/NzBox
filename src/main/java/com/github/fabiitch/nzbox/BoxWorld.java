@@ -4,11 +4,12 @@ import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.contact.listener.ContactListener;
 import com.github.fabiitch.nzbox.contact.listener.ContactListenerLogger;
+import com.github.fabiitch.nzbox.contact.utils.ContactUtils;
 import com.github.fabiitch.nzbox.data.Body;
 import com.github.fabiitch.nzbox.data.BoxData;
 import com.github.fabiitch.nzbox.data.Fixture;
 import com.github.fabiitch.nzbox.profiler.BoxProfiler;
-import com.github.fabiitch.nzbox.utils.BoxPools;
+import com.github.fabiitch.nzbox.pools.BoxPools;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,7 @@ public class BoxWorld {
 
     private BoxPools pools;
 
-    private float stepTime = 1 / 200F;
+    private float stepTime = 1f / 120f;
     private float accumulator = 0f;
     public boolean activeProfiler;
 
@@ -48,13 +49,13 @@ public class BoxWorld {
             if (activeProfiler) profiler.endIteration();
             accumulator -= stepTime;
         }
-
         if (activeProfiler) profiler.endStep();
         simulationRunning = false;
+        data.getBoxQuadTree().updateQuad();
     }
 
     public void iteration() {
-        Array<Body> bodies = data.getBodies();
+        Array<Body> bodies = data.getMovingBodies();
 
         for (int i = 0, n = bodies.size; i < n; i++) {
             Body body = bodies.get(i);
@@ -86,40 +87,65 @@ public class BoxWorld {
     }
 
     protected void checkFixtureCollision(Body bodyA, Fixture fixtureA) {
-        for (Body bodyB : data.getBodies()) {
-            if (bodyA != bodyB && bodyB.isActive()) {
-                for (Fixture fixtureB : bodyB.getFixtures()) {
-                    if (fixtureB.isActive()) {
-                        fixtureCollision(fixtureA, fixtureB);
-                    }
+        if (activeProfiler) profiler.fixtureCheckCollision.inc();
+
+        Array<Fixture<?>> fixturesClose = data.getBoxQuadTree().query(fixtureA.getBodyShape().getBoundingRect());
+
+        for (int b = 0, n2 = fixturesClose.size; b < n2; b++) {
+            Fixture fixtureB = fixturesClose.get(b);
+            if (BoxWorldUtils.shouldTestContact(bodyA, fixtureB.getBody())) {   //TODO a voir vu qu'on a deja la liste
+                fixtureTestCollision(fixtureA, fixtureB);
+            }
+        }
+        pools.freeFixtureArray(fixturesClose);
+    }
+
+    private void fixtureTestCollision(Fixture<?> fixtureA, Fixture<?> fixtureB) {
+        if (activeProfiler) profiler.fixtureCheckCollision.inc();
+
+        ContactFixture hasContact = fixtureA.hasContact(fixtureB);
+        if (hasContact != null) {
+            if (activeProfiler) profiler.fastCheckContact.inc();
+            boolean fastCheck = ContactUtils.fastCheck(fixtureA, fixtureB);
+            if (!fastCheck) {
+                endContact(hasContact);
+            } else {
+                if (activeProfiler) profiler.testContact.inc();
+                boolean isAlwaysContact = fixtureA.testContact(fixtureB);
+                if (isAlwaysContact) {
+                    fixtureA.replace(fixtureB);
+                } else {
+                    endContact(hasContact);
+                }
+            }
+        } else {
+            if (activeProfiler) profiler.fastCheckContact.inc();
+            boolean fastCheck = ContactUtils.fastCheck(fixtureA, fixtureB);
+            if (fastCheck) {
+                if (activeProfiler) profiler.testContact.inc();
+                boolean newContact = fixtureA.testContact(fixtureB);
+                if (newContact) {
+                    beginContact(fixtureA, fixtureB);
                 }
             }
         }
     }
 
-    private void fixtureCollision(Fixture fixtureA, Fixture fixtureB) {
-        ContactFixture contactFixture = fixtureA.hasContact(fixtureB);
-        if (contactFixture != null) {
-            boolean isAlwaysContact = fixtureA.testContact(fixtureB);
-            if (isAlwaysContact) {
-                if (contactFixture.isReplace()) {
-                    fixtureA.replace(fixtureB);
-                }
-            } else {
-                contactListener.endContact(contactFixture);
-                data.endContact(contactFixture);
-            }
+    private void beginContact(Fixture<?> fixtureA, Fixture<?> fixtureB) {
+        if (activeProfiler) profiler.beginContact.inc();
 
-        } else {
-            boolean isNewContact = fixtureA.testContact(fixtureB);
-            if (isNewContact) {
-                contactFixture = data.addContact(fixtureA, fixtureB);
-                contactListener.beginContact(contactFixture);
-                if (contactFixture.isReplace()) {
-                    fixtureA.replace(fixtureB);
-                }
-            }
+        ContactFixture contactFixture = data.addContact(fixtureA, fixtureB);
+        contactListener.beginContact(contactFixture);
+        if (contactFixture.isReplace()) {
+            fixtureA.replace(fixtureB);
         }
+    }
+
+    private void endContact(ContactFixture contactFixture) {
+        if (activeProfiler) profiler.endContact.inc();
+        if (contactFixture.isTriggerEnd())
+            contactListener.endContact(contactFixture);
+        data.endContact(contactFixture);
     }
 
     public void addBody(Body body) {

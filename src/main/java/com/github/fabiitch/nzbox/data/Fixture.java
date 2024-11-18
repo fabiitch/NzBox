@@ -1,5 +1,6 @@
 package com.github.fabiitch.nzbox.data;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nz.java.data.quadtree.QuadTree;
@@ -10,47 +11,30 @@ import com.github.fabiitch.nzbox.shape.BodyShape;
 import lombok.Getter;
 import lombok.Setter;
 
+
+@Getter
 public class Fixture<S extends BodyShape<?>> {
 
     static ContactResolver contactResolver = new ContactResolver();
 
-    @Getter
     int id;
-    @Getter
-    private Body body;
-    @Getter
-    private boolean active = true;
-    @Getter
-    private S bodyShape;
-    @Getter
-    private final Array<ContactFixture> contacts;
-    @Getter
-    private final Vector2 relativePos = new Vector2();
-    @Getter
-    private float relativeRotation;
-    @Getter
     @Setter
-    private boolean replaceBody = true;
-
-    @Getter
+    private Body body;
+    private boolean active = true;
+    private S bodyShape;
+    private final Array<ContactFixture> contacts= new Array<>();;
+    private final Vector2 relativePos = new Vector2();
     @Setter
     private Object userData;
 
-    @Getter
-    QuadTree quadTree;
-
     public Fixture(S bodyShape) {
         this.bodyShape = bodyShape;
-        contacts = new Array<>();
     }
 
-    public void setPosition(float x, float y, float rotation) {
+    void setPosition(float x, float y, float rotation) {
         bodyShape.setPosition(relativePos.x + x, relativePos.y + y);
-        bodyShape.setRotation(rotation + relativeRotation);
-    }
-
-    public void setBody(Body body) {
-        this.body = body;
+        bodyShape.setRotation(rotation);
+        this.bodyShape.computeBoundingRect();
     }
 
     public ContactFixture hasContact(Fixture fixtureB) {
@@ -82,20 +66,23 @@ public class Fixture<S extends BodyShape<?>> {
         return bodyShape.getPosition(res);
     }
 
-    public void addContact(ContactFixture contactFixture) {
+    void addContact(ContactFixture contactFixture) {
         contacts.add(contactFixture);
     }
 
-    public void removeContact(ContactFixture contactFixture) {
+    void removeContact(ContactFixture contactFixture) {
         contacts.removeValue(contactFixture, true);
     }
 
     @Override
     public String toString() {
-        if(userData != null){
+        if (userData != null) {
             return "Body id=" + getId() + " - [" + userData.toString() + "]";
         }
-        return "Body id=" + getId()  + " - [" + super.toString() + "]";
+        return "Body id=" + getId() + " - [" + super.toString() + "]";
+    }
+
+    public Rectangle getBoundingRectangle() {
+        return bodyShape.getBoundingRect();
     }
 }
-
