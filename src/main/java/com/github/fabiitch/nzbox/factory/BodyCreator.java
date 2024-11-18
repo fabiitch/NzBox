@@ -1,4 +1,4 @@
-package com.github.fabiitch.nzbox.bodies;
+package com.github.fabiitch.nzbox.factory;
 
 
 import com.github.fabiitch.nzbox.BoxWorld;

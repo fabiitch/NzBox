@@ -1,4 +1,6 @@
-package com.github.fabiitch.nzbox.contact;
+package com.github.fabiitch.nzbox.contact.listener;
+
+import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 
 public interface ContactListener {
 

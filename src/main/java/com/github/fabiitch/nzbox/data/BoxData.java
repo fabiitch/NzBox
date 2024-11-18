@@ -3,9 +3,10 @@ package com.github.fabiitch.nzbox.data;
 import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nz.java.data.quadtree.QuadTree;
 import com.github.fabiitch.nzbox.BoxWorld;
-import com.github.fabiitch.nzbox.contact.ContactBody;
-import com.github.fabiitch.nzbox.contact.ContactFixture;
-import com.github.fabiitch.nzbox.contact.ContactUtils;
+import com.github.fabiitch.nzbox.contact.data.ContactBody;
+import com.github.fabiitch.nzbox.contact.data.ContactFixture;
+import com.github.fabiitch.nzbox.contact.utils.ContactUtils;
+import com.github.fabiitch.nzbox.data.quad.BoxQuadTree;
 import com.github.fabiitch.nzbox.utils.BoxPools;
 import com.github.fabiitch.nzbox.utils.IdGenerator;
 import com.github.fabiitch.nzbox.utils.StaticIdGenerator;
@@ -15,13 +16,13 @@ import lombok.Getter;
 public class BoxData {
 
     private final BoxWorld world;
-    private IdGenerator bodyIdGenerator = new StaticIdGenerator();
-    private IdGenerator fixtureIdGenerator = new StaticIdGenerator();
+    private final IdGenerator bodyIdGenerator = new StaticIdGenerator();
+    private final IdGenerator fixtureIdGenerator = new StaticIdGenerator();
 
     private final Array<Body> bodies = new Array<>();
-    private QuadTree<Fixture<?>> quadTree = new QuadTree<>();
 
     private final BoxPools boxPools;
+    private final BoxQuadTree boxQuadTree;
 
     public BoxData(BoxWorld world, BoxPools boxPools) {
         this.world = world;
@@ -53,7 +54,7 @@ public class BoxData {
             throw new IllegalArgumentException("Fixture shape is invalid");
         }
         fixture.id = fixtureIdGenerator.newId();
-        quadTree.add(fixture, fixture.getBodyShape().getBoundingRect());
+        boxQuadTree.addFixture(fixture);
     }
 
     public void removeFixture(Fixture fixture) {
@@ -61,6 +62,7 @@ public class BoxData {
         for (ContactFixture contactFixture : contacts) {
             world.getContactListener().endContact(contactFixture);
         }
+        boxQuadTree.remove(fixture);
     }
 
     public Body getBody(int id) {

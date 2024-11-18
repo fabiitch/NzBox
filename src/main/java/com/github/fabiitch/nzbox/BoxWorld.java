@@ -1,13 +1,13 @@
 package com.github.fabiitch.nzbox;
 
 import com.badlogic.gdx.utils.Array;
-import com.github.fabiitch.nzbox.bodies.BodyType;
-import com.github.fabiitch.nzbox.contact.ContactFixture;
-import com.github.fabiitch.nzbox.contact.ContactListener;
-import com.github.fabiitch.nzbox.contact.ContactListenerLogger;
+import com.github.fabiitch.nzbox.contact.data.ContactFixture;
+import com.github.fabiitch.nzbox.contact.listener.ContactListener;
+import com.github.fabiitch.nzbox.contact.listener.ContactListenerLogger;
 import com.github.fabiitch.nzbox.data.Body;
 import com.github.fabiitch.nzbox.data.BoxData;
 import com.github.fabiitch.nzbox.data.Fixture;
+import com.github.fabiitch.nzbox.profiler.BoxProfiler;
 import com.github.fabiitch.nzbox.utils.BoxPools;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,9 +24,12 @@ public class BoxWorld {
 
     private float stepTime = 1 / 200F;
     private float accumulator = 0f;
+    public boolean activeProfiler;
 
     @Getter
     private boolean simulationRunning = false;
+
+    private BoxProfiler profiler;
 
     public BoxWorld() {
         pools = new BoxPools();
@@ -35,11 +38,18 @@ public class BoxWorld {
 
     public void step(float dt) {
         simulationRunning = true;
+
+        if (activeProfiler) profiler.startStep(dt);
+
         accumulator += dt;
-        while (accumulator >= stepTime) {
+        while (accumulator >= stepTime && simulationRunning) {
+            if (activeProfiler) profiler.startIteration();
             iteration();
+            if (activeProfiler) profiler.endIteration();
             accumulator -= stepTime;
         }
+
+        if (activeProfiler) profiler.endStep();
         simulationRunning = false;
     }
 
@@ -48,14 +58,15 @@ public class BoxWorld {
 
         for (int i = 0, n = bodies.size; i < n; i++) {
             Body body = bodies.get(i);
-            if (!body.isActive() || body.getBodyType() == BodyType.Static)
+            if (!BoxWorldUtils.shouldUpdateBody(body))
                 continue;
             moveBody(body);
         }
-        simulationRunning = false;
     }
 
     private void moveBody(Body body) {
+        if (activeProfiler) profiler.bodyMove.inc();
+
         boolean move = body.move(stepTime);
         if (move || body.isDirty()) {
             checkBodyCollisions(body);
@@ -64,6 +75,8 @@ public class BoxWorld {
     }
 
     protected void checkBodyCollisions(Body bodyA) {
+        if (activeProfiler) profiler.bodyCheckCollision.inc();
+
         for (int i = 0, n = bodyA.getFixtures().size; i < n; i++) {
             Fixture fixtureA = bodyA.getFixtures().get(i);
             if (!fixtureA.isActive())
@@ -112,6 +125,7 @@ public class BoxWorld {
     public void addBody(Body body) {
         data.addBody(body);
     }
+
     public void removeBody(Body body) {
         data.removeBody(body);
     }

@@ -53,6 +53,9 @@ public class BoxDebugRenderer {
             for (int i2 = 0, n2 = fixtures.size; i2 < n2; i2++) {
                 Fixture fixture = fixtures.get(i2);
 
+                if(!frustum.isInside(fixture.getBodyShape().getBoundingRect()))
+                    continue;
+
                 if (body.getBodyType() == BodyType.Static)
                     shapeRenderer.setColor(Color.RED);
                 else if (body.getBodyType() == BodyType.Dynamic)
