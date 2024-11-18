@@ -27,6 +27,7 @@ public class BoxData {
     public BoxData(BoxWorld world, BoxPools boxPools) {
         this.world = world;
         this.boxPools = boxPools;
+        boxQuadTree = new BoxQuadTree();
     }
 
     public void addBody(Body body) {
