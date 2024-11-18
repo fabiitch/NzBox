@@ -1,7 +1,7 @@
 package com.github.fabiitch.nzbox.debug;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -38,7 +38,7 @@ public class BoxDebugRenderer {
         fontDrawer = new FontDrawer(bitmapFont, spriteBatch);
     }
 
-    public void render(BoxWorld world, Camera camera) {
+    public void render(BoxWorld world, OrthographicCamera camera) {
         frustum.update(camera);
 
         shapeRenderer.setProjectionMatrix(camera.combined);
