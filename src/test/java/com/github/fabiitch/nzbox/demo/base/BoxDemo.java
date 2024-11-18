@@ -69,7 +69,7 @@ public abstract class BoxDemo implements Screen {
 
         camController.update(delta);
         camera.update();
-        boxDebugRenderer.render(world, camera.combined);
+        boxDebugRenderer.render(world, camera);
 
         stage.act();
         stage.draw();
