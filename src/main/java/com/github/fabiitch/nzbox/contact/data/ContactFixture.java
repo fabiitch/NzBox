@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ContactFixture {
-    private Fixture fixtureA;
-    private Fixture fixtureB;
+    private Fixture<?> fixtureA;
+    private Fixture<?> fixtureB;
 
     private boolean replace;
     private boolean triggerEnd = true;
@@ -17,11 +17,11 @@ public class ContactFixture {
     public boolean hasBody(Body body) {
         return this.fixtureA.getBody() == body || this.fixtureB.getBody() == body;
     }
-    public boolean hasFixture(Fixture fixture) {
+    public boolean hasFixture(Fixture<?> fixture) {
         return this.fixtureA == fixture || this.fixtureB == fixture;
     }
 
-    public Fixture getOther(Fixture<?> fixture) {
+    public Fixture<?> getOther(Fixture<?> fixture) {
         if (fixture == fixtureA)
             return fixtureB;
         return fixtureA;
