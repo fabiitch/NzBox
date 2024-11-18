@@ -1,4 +1,4 @@
-package com.github.fabiitch.nzbox.contact;
+package com.github.fabiitch.nzbox.contact.data;
 
 import com.github.fabiitch.nzbox.data.Body;
 import com.github.fabiitch.nzbox.data.Fixture;

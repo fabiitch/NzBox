@@ -3,7 +3,7 @@ package com.github.fabiitch.nzbox.data;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nz.java.data.quadtree.QuadTree;
-import com.github.fabiitch.nzbox.contact.ContactFixture;
+import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
 import com.github.fabiitch.nzbox.contact.compute.ShapeContact;
 import com.github.fabiitch.nzbox.shape.BodyShape;

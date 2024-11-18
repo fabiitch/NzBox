@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nzbox.BoxWorld;
 import com.github.fabiitch.nzbox.bodies.BodyType;
-import com.github.fabiitch.nzbox.contact.ContactBody;
+import com.github.fabiitch.nzbox.contact.data.ContactBody;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,6 +47,12 @@ public class Body {
     }
 
     private final Vector2 tmp = new Vector2();
+
+    public void addInWorld(int id, BoxWorld world) {
+        this.id = id;
+        this.world = world;
+
+    }
 
     public boolean move(float dt) {
         if (velocity.isZero() && angularVelocity == 0)

@@ -1,8 +1,8 @@
 package com.github.fabiitch.nzbox.utils;
 
 import com.badlogic.gdx.utils.Pools;
-import com.github.fabiitch.nzbox.contact.ContactBody;
-import com.github.fabiitch.nzbox.contact.ContactFixture;
+import com.github.fabiitch.nzbox.contact.data.ContactBody;
+import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.data.Fixture;
 
 //TODO body, fixture, shape
