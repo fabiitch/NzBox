@@ -1,6 +1,7 @@
 package com.github.fabiitch.nzbox;
 
 import com.badlogic.gdx.utils.Array;
+import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
 import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.contact.listener.ContactListener;
 import com.github.fabiitch.nzbox.contact.listener.ContactListenerLogger;
@@ -21,7 +22,8 @@ public class BoxWorld {
     @Setter
     private ContactListener contactListener = new ContactListenerLogger();
 
-    private BoxPools pools;
+    private final ContactResolver contactResolver = new ContactResolver();
+    private final BoxPools pools;
 
     private float stepTime = 1f / 120f;
     private float accumulator = 0f;
@@ -105,30 +107,32 @@ public class BoxWorld {
 
         ContactFixture hasContact = fixtureA.hasContact(fixtureB);
         if (hasContact != null) {
-            if (activeProfiler) profiler.fastCheckContact.inc();
-            boolean fastCheck = ContactUtils.fastCheck(fixtureA, fixtureB);
-            if (!fastCheck) {
+            if (!fastCheck(fixtureA, fixtureB)) {
                 endContact(hasContact);
             } else {
-                if (activeProfiler) profiler.testContact.inc();
-                boolean isAlwaysContact = fixtureA.testContact(fixtureB);
-                if (isAlwaysContact) {
-                    fixtureA.replace(fixtureB);
+                if (testContact(fixtureA, fixtureB)) {
+                    fixtureA.replace(fixtureB, contactResolver);
                 } else {
                     endContact(hasContact);
                 }
             }
         } else {
-            if (activeProfiler) profiler.fastCheckContact.inc();
-            boolean fastCheck = ContactUtils.fastCheck(fixtureA, fixtureB);
-            if (fastCheck) {
-                if (activeProfiler) profiler.testContact.inc();
-                boolean newContact = fixtureA.testContact(fixtureB);
-                if (newContact) {
+            if (fastCheck(fixtureA, fixtureB)) {
+                if (testContact(fixtureA, fixtureB)) {
                     beginContact(fixtureA, fixtureB);
                 }
             }
         }
+    }
+
+    private boolean fastCheck(Fixture<?> fixtureA, Fixture<?> fixtureB) {
+        if (activeProfiler) profiler.fastCheckContact.inc();
+        return ContactUtils.fastCheck(fixtureA, fixtureB);
+    }
+
+    private boolean testContact(Fixture<?> fixtureA, Fixture<?> fixtureB) {
+        if (activeProfiler) profiler.testContact.inc();
+        return fixtureA.testContact(fixtureB, contactResolver);
     }
 
     private void beginContact(Fixture<?> fixtureA, Fixture<?> fixtureB) {
@@ -137,7 +141,7 @@ public class BoxWorld {
         ContactFixture contactFixture = data.addContact(fixtureA, fixtureB);
         contactListener.beginContact(contactFixture);
         if (contactFixture.isReplace()) {
-            fixtureA.replace(fixtureB);
+            fixtureA.replace(fixtureB, contactResolver);
         }
     }
 
