@@ -15,8 +15,6 @@ import lombok.Setter;
 @Getter
 public class Fixture<S extends BodyShape<?>> {
 
-    static ContactResolver contactResolver = new ContactResolver();
-
     int id;
     @Setter
     private Body body;
@@ -47,14 +45,14 @@ public class Fixture<S extends BodyShape<?>> {
         return null;
     }
 
-    public boolean testContact(Fixture fixtureB) {
+    public boolean testContact(Fixture fixtureB, ContactResolver contactResolver) {
         ShapeContact myVisitor = bodyShape.getContactVisitor(contactResolver);
 
         boolean b = fixtureB.getBodyShape().testContact(myVisitor);
         return b;
     }
 
-    public void replace(Fixture fixtureB) {
+    public void replace(Fixture fixtureB, ContactResolver contactResolver) {
         ShapeContact contactVisitor = bodyShape.getContactVisitor(contactResolver);
 
         Vector2 replace = fixtureB.bodyShape.replace(contactVisitor);

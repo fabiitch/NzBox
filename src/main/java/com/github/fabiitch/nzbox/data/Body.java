@@ -2,6 +2,8 @@ package com.github.fabiitch.nzbox.data;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
 import com.github.fabiitch.nzbox.BoxWorld;
 import com.github.fabiitch.nzbox.bodies.BodyType;
 import com.github.fabiitch.nzbox.contact.data.ContactBody;
@@ -9,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-public class Body {
+public class Body implements Poolable {
     @Getter
     int id;
     @Getter
@@ -27,7 +29,7 @@ public class Body {
 
     @Getter
     @Setter
-    private boolean dirty;
+    private boolean dirty = true;
 
     @Getter
     private final Vector2 position = new Vector2();
@@ -121,5 +123,21 @@ public class Body {
 
     void removeContact(ContactBody contactBody) {
         contacts.removeValue(contactBody, true);
+    }
+
+    @Override
+    public void reset() {
+        id = -1;
+        world = null;
+        active = true;
+        bodyType = null;
+        fixtures.clear();
+        contacts.clear();
+        dirty = true;
+        position.setZero();
+        velocity.setZero();
+        angularVelocity = 0;
+        rotation = 0;
+        userData = null;
     }
 }
