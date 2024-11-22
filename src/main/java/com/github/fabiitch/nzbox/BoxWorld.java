@@ -1,6 +1,7 @@
 package com.github.fabiitch.nzbox;
 
 import com.badlogic.gdx.utils.Array;
+import com.github.fabiitch.nz.java.time.timers.TimeLocker;
 import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
 import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.contact.listener.ContactListener;
@@ -34,6 +35,7 @@ public class BoxWorld {
 
     private BoxProfiler profiler;
 
+    private TimeLocker timeLocker =  new TimeLocker(5f);
     public BoxWorld() {
         pools = new BoxPools();
         this.data = new BoxData(this, this.pools);
@@ -53,7 +55,9 @@ public class BoxWorld {
         }
         if (activeProfiler) profiler.endStep();
         simulationRunning = false;
-        data.getBoxQuadTree().updateQuad();
+
+        if (timeLocker.isOpen(dt))
+            data.getBoxQuadTree().updateQuad();
     }
 
     public void iteration() {
