@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import com.github.fabiitch.nz.gdx.render.g2d.FontDrawer;
 import com.github.fabiitch.nz.gdx.render.shape.Frustum2D;
 import com.github.fabiitch.nz.gdx.render.shape.NzShapeRenderer;
+import com.github.fabiitch.nz.java.data.quadtree.QuadTreeRenderer;
 import com.github.fabiitch.nzbox.BoxWorld;
 import com.github.fabiitch.nzbox.bodies.BodyType;
 import com.github.fabiitch.nzbox.data.Body;
@@ -25,7 +26,11 @@ public class BoxDebugRenderer {
 
     private final Frustum2D frustum;
 
-    private Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
+    private boolean drawQuad = true;
+
+    private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
+
+    private final QuadTreeRenderer quadTreeRenderer;
 
     public BoxDebugRenderer() {
         shapeRenderer = new NzShapeRenderer();
@@ -33,6 +38,7 @@ public class BoxDebugRenderer {
         bitmapFont = new BitmapFont();
         bitmapFont.getData().setScale(0.5f);
         spriteBatch = new SpriteBatch();
+        quadTreeRenderer = new QuadTreeRenderer();
         frustum = new Frustum2D();
 
         fontDrawer = new FontDrawer(bitmapFont, spriteBatch);
@@ -53,7 +59,7 @@ public class BoxDebugRenderer {
             for (int i2 = 0, n2 = fixtures.size; i2 < n2; i2++) {
                 Fixture fixture = fixtures.get(i2);
 
-                if(!frustum.isInside(fixture.getBodyShape().getBoundingRect()))
+                if (!frustum.isInside(fixture.getBodyShape().getBoundingRect()))
                     continue;
 
                 if (body.getBodyType() == BodyType.Static)
@@ -76,6 +82,9 @@ public class BoxDebugRenderer {
             shapeRenderer.line(tmp1, tmp3.set(tmp1).add(tmp2.scl(0.2f)));
         }
 
+        if (drawQuad) {
+            quadTreeRenderer.render(world.getData().getQuadTree(), camera);
+        }
         shapeRenderer.end();
 
         spriteBatch.begin();

@@ -2,7 +2,6 @@ package com.github.fabiitch.nzbox.data;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.github.fabiitch.nzbox.BoxWorld;
 import com.github.fabiitch.nzbox.bodies.BodyType;
@@ -50,13 +49,11 @@ public class Body implements Poolable {
 
     private final Vector2 tmp = new Vector2();
 
-    public void addInWorld(int id, BoxWorld world) {
-        this.id = id;
-        this.world = world;
-
-    }
-
-    public boolean move(float dt) {
+    public boolean update(float dt) {
+        if(dirty)
+            return true;
+        if(fixtures.isEmpty())
+            return false;
         if (velocity.isZero() && angularVelocity == 0)
             return false;
 
