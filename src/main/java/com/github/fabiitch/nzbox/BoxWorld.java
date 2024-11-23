@@ -1,7 +1,6 @@
 package com.github.fabiitch.nzbox;
 
 import com.badlogic.gdx.utils.Array;
-import com.github.fabiitch.nz.java.time.timers.TimeLocker;
 import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
 import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.contact.listener.ContactListener;
@@ -35,7 +34,6 @@ public class BoxWorld {
 
     private BoxProfiler profiler;
 
-    private TimeLocker timeLocker =  new TimeLocker(5f);
     public BoxWorld() {
         pools = new BoxPools();
         this.data = new BoxData(this, this.pools);
@@ -55,9 +53,6 @@ public class BoxWorld {
         }
         if (activeProfiler) profiler.endStep();
         simulationRunning = false;
-
-        if (timeLocker.isOpen(dt))
-            data.getBoxQuadTree().updateQuad();
     }
 
     public void iteration() {
@@ -67,21 +62,22 @@ public class BoxWorld {
             Body body = bodies.get(i);
             if (!BoxWorldUtils.shouldUpdateBody(body))
                 continue;
-            moveBody(body);
+            updateBody(body);
         }
     }
 
-    private void moveBody(Body body) {
+    public void updateBody(Body body) {
         if (activeProfiler) profiler.bodyMove.inc();
 
-        boolean move = body.move(stepTime);
-        if (move || body.isDirty()) {
+        boolean updated = body.update(stepTime);
+        if (updated) {
             checkBodyCollisions(body);
             body.setDirty(false);
+            data.updateBody(body);
         }
     }
 
-    protected void checkBodyCollisions(Body bodyA) {
+    private void checkBodyCollisions(Body bodyA) {
         if (activeProfiler) profiler.bodyCheckCollision.inc();
 
         for (int i = 0, n = bodyA.getFixtures().size; i < n; i++) {
@@ -92,10 +88,10 @@ public class BoxWorld {
         }
     }
 
-    protected void checkFixtureCollision(Body bodyA, Fixture fixtureA) {
+    private void checkFixtureCollision(Body bodyA, Fixture fixtureA) {
         if (activeProfiler) profiler.fixtureCheckCollision.inc();
 
-        Array<Fixture<?>> fixturesClose = data.getBoxQuadTree().query(fixtureA.getBodyShape().getBoundingRect());
+        Array<Fixture<?>> fixturesClose = data.query(fixtureA.getBodyShape().getBoundingRect());
 
         for (int b = 0, n2 = fixturesClose.size; b < n2; b++) {
             Fixture fixtureB = fixturesClose.get(b);
@@ -115,7 +111,8 @@ public class BoxWorld {
                 endContact(hasContact);
             } else {
                 if (testContact(fixtureA, fixtureB)) {
-                    fixtureA.replace(fixtureB, contactResolver);
+                    if (hasContact.isReplace())
+                        fixtureA.replace(fixtureB, contactResolver);
                 } else {
                     endContact(hasContact);
                 }

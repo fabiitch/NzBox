@@ -1,6 +1,8 @@
 package com.github.fabiitch.nzbox.data;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.github.fabiitch.nz.java.data.quadtree.QuadTree;
 import com.github.fabiitch.nzbox.BoxWorld;
 import com.github.fabiitch.nzbox.bodies.BodyType;
 import com.github.fabiitch.nzbox.contact.data.ContactBody;
@@ -12,23 +14,27 @@ import com.github.fabiitch.nzbox.utils.IdGenerator;
 import com.github.fabiitch.nzbox.utils.StaticIdGenerator;
 import lombok.Getter;
 
-@Getter
+
 public class BoxData {
 
     private final BoxWorld world;
     private final IdGenerator bodyIdGenerator = new StaticIdGenerator();
     private final IdGenerator fixtureIdGenerator = new StaticIdGenerator();
-
+    @Getter
     private final Array<Body> bodies = new Array<>();
+    @Getter
     private final Array<Body> movingBodies = new Array<>();
-
-    private final BoxPools boxPools;
+    @Getter
+    private final BoxPools pools;
     private final BoxQuadTree boxQuadTree;
+    @Getter
+    private final QuadTree<Fixture<?>> quadTree;
 
-    public BoxData(BoxWorld world, BoxPools boxPools) {
+    public BoxData(BoxWorld world, BoxPools pools) {
         this.world = world;
-        this.boxPools = boxPools;
-        boxQuadTree = new BoxQuadTree(boxPools);
+        this.pools = pools;
+        this.quadTree = new QuadTree<>();
+        this.boxQuadTree = new BoxQuadTree(quadTree);
     }
 
     public void addBody(Body body) {
@@ -40,16 +46,22 @@ public class BoxData {
         for (Fixture fixture : body.getFixtures()) {
             addFixture(fixture);
         }
-        if(body.isActive() && body.getBodyType()!= BodyType.Static)
+        if (body.isActive() && body.getBodyType() != BodyType.Static)
             movingBodies.add(body);
     }
 
     public void removeBody(Body body) {
-        bodyIdGenerator.free(body.id);
-        bodies.removeValue(body, true);
-        body.world = null;
-        for (Fixture fixture : body.getFixtures()) {
-            removeFixture(fixture);
+        if (bodies.removeValue(body, true)) {
+            if(body.getBodyType() != BodyType.Static){
+                movingBodies.removeValue(body, true);
+            }
+            bodyIdGenerator.free(body.id);
+            body.world = null;
+            for (Fixture fixture : body.getFixtures()) {
+                removeFixture(fixture);
+            }
+        } else {
+            //TODO looger
         }
     }
 
@@ -64,7 +76,7 @@ public class BoxData {
     public void removeFixture(Fixture fixture) {
         Array<ContactFixture> contacts = fixture.getContacts();
         for (ContactFixture contactFixture : contacts) {
-            world.getContactListener().endContact(contactFixture);
+            endContact(contactFixture);
         }
         boxQuadTree.remove(fixture);
     }
@@ -80,14 +92,14 @@ public class BoxData {
 
 
     public ContactFixture addContact(Fixture fixtureA, Fixture fixtureB) {
-        ContactFixture contactFixture = boxPools.getContactFixture(fixtureA, fixtureB);
+        ContactFixture contactFixture = pools.getContactFixture(fixtureA, fixtureB);
         fixtureA.addContact(contactFixture);
         fixtureB.addContact(contactFixture);
 
         ContactBody contactBody = fixtureA.getBody().getContact(fixtureB.getBody());
 
         if (contactBody == null) {
-            contactBody = boxPools.getContactBody(contactFixture);
+            contactBody = pools.getContactBody(contactFixture);
             fixtureA.getBody().addContact(contactBody);
             fixtureB.getBody().addContact(contactBody);
         } else {
@@ -114,9 +126,24 @@ public class BoxData {
         if (contactBody.getContactsFixture().isEmpty()) {
             bodyA.removeContact(contactBody);
             bodyB.removeContact(contactBody);
-            boxPools.free(contactBody);
+            pools.free(contactBody);
         }
-        boxPools.free(contactFixture);
+        pools.free(contactFixture);
     }
 
+    public void updateBody(Body body) {
+        if (body.getWorld() != null)
+            for (int i = 0, n = body.getFixtures().size; i < n; i++)
+                boxQuadTree.update(body.getFixtures().get(i));
+    }
+
+    public Array<Fixture<?>> query(Rectangle boundingRect) {
+        Array<Fixture<?>> fixtureArray = pools.getFixtureArray();
+        return quadTree.query(boundingRect, fixtureArray);
+    }
+
+    public Array<Fixture<?>> getFixtureClose(Fixture fixtureA, Array<Fixture<?>> results) {
+        boxQuadTree.getFixtureClose(fixtureA, results);
+        return results;
+    }
 }
