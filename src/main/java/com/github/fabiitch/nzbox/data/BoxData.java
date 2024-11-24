@@ -33,7 +33,7 @@ public class BoxData {
     public BoxData(BoxWorld world, BoxPools pools) {
         this.world = world;
         this.pools = pools;
-        this.quadTree = new QuadTree<>();
+        this.quadTree = new QuadTree<>(new Rectangle(),20 ,10);
         this.boxQuadTree = new BoxQuadTree(quadTree);
     }
 
