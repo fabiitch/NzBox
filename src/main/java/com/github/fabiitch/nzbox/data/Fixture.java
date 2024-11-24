@@ -3,6 +3,7 @@ package com.github.fabiitch.nzbox.data;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.github.fabiitch.nz.java.data.quadtree.QuadRectangleValue;
 import com.github.fabiitch.nz.java.data.quadtree.QuadTree;
 import com.github.fabiitch.nzbox.contact.data.ContactFixture;
 import com.github.fabiitch.nzbox.contact.compute.ContactResolver;
@@ -13,7 +14,7 @@ import lombok.Setter;
 
 
 @Getter
-public class Fixture<S extends BodyShape<?>> {
+public class Fixture<S extends BodyShape<?>> implements QuadRectangleValue {
 
     int id;
     @Setter
@@ -81,6 +82,11 @@ public class Fixture<S extends BodyShape<?>> {
     }
 
     public Rectangle getBoundingRectangle() {
+        return bodyShape.getBoundingRect();
+    }
+
+    @Override
+    public Rectangle getBounds() {
         return bodyShape.getBoundingRect();
     }
 }
