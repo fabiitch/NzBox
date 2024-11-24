@@ -14,7 +14,7 @@ public class BoxQuadTree {
     private final IntMap<QuadTree<Fixture<?>>> fixtureMap = new IntMap<>();
 
     public void addFixture(Fixture fixture) {
-        QuadTree<Fixture<?>> quad = quadTree.add(fixture, fixture.getBodyShape().getBoundingRect());
+        QuadTree<Fixture<?>> quad = quadTree.add(fixture);
         fixtureMap.put(fixture.getId(), quad);
     }
 
@@ -25,12 +25,6 @@ public class BoxQuadTree {
 
     public void update(Fixture fixture) {
         quadTree.update(fixture);
-
-//        QuadTree<Fixture<?>> fixtureQuadTree = fixtureMap.get(fixture.getId());
-//        QuadTree update = fixtureQuadTree.update(fixture);
-//        if(fixtureQuadTree != update){
-//            fixtureMap.put(fixture.getId(), update);
-//        }
     }
     public void updateQuad() {
         quadTree.recompute();
