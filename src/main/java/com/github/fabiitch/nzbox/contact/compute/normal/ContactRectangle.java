@@ -1,4 +1,4 @@
-package com.github.fabiitch.nzbox.contact.compute.impl;
+package com.github.fabiitch.nzbox.contact.compute.normal;
 
 import com.badlogic.gdx.math.*;
 import com.github.fabiitch.nz.java.math.shapes.intersectors.IntersectorCircle;

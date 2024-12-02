@@ -1,9 +1,9 @@
 package com.github.fabiitch.nzbox.contact.compute;
 
 
-import com.github.fabiitch.nzbox.contact.compute.impl.ContactCircle;
-import com.github.fabiitch.nzbox.contact.compute.impl.ContactPolygon;
-import com.github.fabiitch.nzbox.contact.compute.impl.ContactRectangle;
+import com.github.fabiitch.nzbox.contact.compute.normal.ContactCircle;
+import com.github.fabiitch.nzbox.contact.compute.normal.ContactPolygon;
+import com.github.fabiitch.nzbox.contact.compute.normal.ContactRectangle;
 import com.github.fabiitch.nzbox.shape.CircleShape;
 import com.github.fabiitch.nzbox.shape.PolygonShape;
 import com.github.fabiitch.nzbox.shape.RectangleShape;
